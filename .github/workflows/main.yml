@@ -28,8 +28,8 @@ jobs:
         with:
           poetry-version: "latest"
 
-      - name: Install tox
-        run: poetry install
+      - name: Install dependencies
+        run: poetry install --with dev
 
       - name: Test
         run: tox
