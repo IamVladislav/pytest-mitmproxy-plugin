@@ -1,0 +1,112 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "pytest-mitmproxy-plugin"
+description = "Use MITM Proxy in autotests with full control from code"
+version = "0.1.0"
+readme = "README.rst"
+authors = [
+    { name = "Vladislav Metel", email = "metel.vlad@gmail.com" },
+]
+maintainers = [
+    { name = "Vladislav Metel", email = "metel.vlad@gmail.com" },
+]
+license = {file = "LICENSE"}
+classifiers = [
+    "Framework :: Pytest",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Testing",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "License :: OSI Approved :: MIT License",
+]
+
+[tool.poetry.dependencies]
+python = ">= 3.11"
+mitmproxy = ">= 11.0.2"
+pytest = ">= 7.2.0"
+
+allure-python-commons = { version = "^2.13.3", optional = true }
+allure-pytest = { version = "^2.13.3", optional = true }
+
+[tool.poetry.extras]
+allure = ["allure-python-commons", "allure-pytest"]
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+mypy = "1.13.0"
+ruff = "0.8.2"
+tox = ">=4.19"
+
+[tool.poetry.group.testing]
+optional = true
+
+[tool.poetry.group.testing.dependencies]
+requests = {extras = ["socks"], version = "^2.32.3"}
+
+[tool.mypy]
+exclude = ".venv"
+python_version = "3.11"
+
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_incomplete_defs = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+extra_checks = true
+follow_imports = "normal"
+ignore_missing_imports = false
+local_partial_types = true
+no_implicit_optional = true
+no_implicit_reexport = true
+show_error_codes = true
+strict_equality = true
+strict_optional = true
+warn_no_return = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unused_configs = true
+warn_unused_ignores = true
+untyped_calls_exclude = ["mitmproxy"]
+
+[[tool.mypy.overrides]]
+# allure is not type annotated
+module = ["allure"]
+ignore_missing_imports = true
+
+[tool.tox]
+env_list = ["check", "3.13", "3.12", "3.11"]
+
+[tool.tox.env_run_base]
+description = "Run test under {base_python}"
+allowlist_externals = ["poetry"]
+commands = [["poetry", "install", "--with", "testing"], ["poetry", "run", "pytest", "tests/"]]
+
+[tool.tox.env.check]
+description = "run type/style check on code base"
+commands = [
+    ["poetry", "install", "--with", "dev"],
+    ["poetry", "run", "mypy", "."],
+    ["poetry", "run", "ruff", "check", "."],
+    ["poetry", "run", "ruff", "format", ".", '--check']
+]
+
+[project.urls]
+Repository = "https://github.com/IamVladislav/pytest-mitmproxy-plugin"
+
+[project.entry-points.pytest11]
+mitmproxy-plugin = "pytest_mitmproxy_plugin.plugin"
