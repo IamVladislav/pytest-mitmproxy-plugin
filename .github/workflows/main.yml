@@ -24,8 +24,12 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - uses: abatilo/actions-poetry@v3
+        with:
+          poetry-version: "latest"
+
       - name: Install tox
-        run: pip install tox
+        run: poetry install
 
       - name: Test
         run: tox
