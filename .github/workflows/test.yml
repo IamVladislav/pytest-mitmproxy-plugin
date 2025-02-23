@@ -1,0 +1,24 @@
+name: 'Test'
+
+inputs:
+  python-version:
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ python-version }}
+
+    - uses: abatilo/actions-poetry@v3
+      with:
+        poetry-version: "latest"
+
+    - name: Install dependencies
+      run: poetry install --with dev
+
+    - name: Test
+      run: poetry run tox
