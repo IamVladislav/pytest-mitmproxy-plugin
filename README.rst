@@ -24,13 +24,16 @@ This `pytest`_ plugin was generated with `Cookiecutter`_ along with `@hackebrot`
 Features
 --------
 
-* TODO
+* You can control the traffic flow dynamically: add or remove addons during the test, modify content on a fly
+* Proxy thread is starting only once per session, but only if test requested the proxy - you can save extra time in both ways - no extra creating proxies, no extra recreating as well
+* Don't think about addons after the test - by default, all addons ill be removed right after test ending
+* Use default 0-port to avoid port allocating conflict or set an exact one in the settings
 
 
 Requirements
 ------------
 
-* TODO
+* There is no extra requirements to use this package. But you still need to install/provide path to MITMProxy certificates to work with HTTPS
 
 
 Installation
@@ -44,7 +47,34 @@ You can install "pytest-mitmproxy-plugin" via `pip`_ from `PyPI`_::
 Usage
 -----
 
-* TODO
+All communication is based on MitmManager wrapper - mitm_manager fixture provides such wrapper right into the test.
+The MitmManager is designed to creating on-demand once per test session, but after each test all added addon are flushed.
+
+Each interaction with traffic require creating a MITMProxy addon - you can read more about addons on the official page - https://docs.mitmproxy.org/stable/addons-overview/
+You may add several addons at once using .add_addon method or remove exact or all addons by .delete_addon or .delete_all_addons.
+Each addon should inherit the AbstractAddon, although it will work without it, it makes code more clear.
+
+You can configure plugin params by using CLI arguments or pyproject.toml. CLI arguments always have a priority.
+Next options are configurable:
+
+--proxy-mode ( or **mode** in .toml ) - string, take a look onto MitmMode enum or CLI help, you may choose, which mode is better for you. By default plugin use SOCKS5, but you may find HTTP ( regular ) more convenient in your case
+
+--proxy-host ( or **host** in .toml ) - string, usually just 127.0.0.1 ( default ) or 0.0.0.0
+
+--proxy-port ( or **port** in .toml ) - number, zero by default ( which means "take an empty port" ) or any other port on machine
+
+--proxy-log-level ( or **log_level** in .toml ) - string, log level according logging, by default - INFO
+
+--proxy-log-file ( or **log_file** in .toml ) - by default, MITMProxy send info data right into stdout, but sometimes in is better to capture in separately, file will be created if it doesn't exist, or use append mode if file existed
+
+The toml configuration should be under "mitmproxy-plugin" label, full configration example::
+
+    [mitmproxy-plugin]
+    mode = "socks5"
+    host = "127.0.0.1"
+    port = 0
+    log_level = "INFO"
+
 
 Contributing
 ------------
