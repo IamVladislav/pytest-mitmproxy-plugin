@@ -26,7 +26,6 @@ jobs:
           draft: false
           prerelease: false
           name: ${{ needs.test_and_build.outputs.version }}
-          tag_name: ${{ github.ref }}
           body: ${{ github.event.head_commit.message }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
