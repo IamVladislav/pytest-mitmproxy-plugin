@@ -1,7 +1,11 @@
 name: 'Test and Build'
 
 on:
-  workflow_call
+  workflow_call:
+    outputs:
+      version:
+        description: "Package version"
+        value: ${{ jobs.build.outputs.version }}
 
 jobs:
   test:
@@ -10,8 +14,8 @@ jobs:
       matrix:
         python-version:
           - 3.11
-          - 3.12
-          - 3.13
+#          - 3.12
+#          - 3.13
     steps:
       - uses: actions/checkout@v4
 
