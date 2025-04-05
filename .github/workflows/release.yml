@@ -11,7 +11,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     needs:
-      - build
+      - test_and_build
     environment:
       name: pypi
       url: https://pypi.org/p/pytest-mitmproxy-plugin
@@ -24,7 +24,7 @@ jobs:
         with:
           draft: false
           prerelease: false
-          release_name: ${{ needs.build.outputs.version }}
+          release_name: ${{ needs.test_and_build.outputs.version }}
           tag_name: ${{ github.ref }}
           body_path: ${{ github.event.head_commit.message }}
         env:
