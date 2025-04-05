@@ -19,14 +19,23 @@ jobs:
       id-token: write
       contents: write
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: rickstaa/action-create-tag@v1
+        with:
+          tag: ${{ needs.test_and_build.outputs.version }}
+          tag_exists_error: false
+          message: "Release ${{ needs.test_and_build.outputs.version }}"
       - name: create-release
         uses: softprops/action-gh-release@v2
         id: create_release
         with:
           draft: false
           prerelease: false
-          name: ${{ needs.test_and_build.outputs.version }}
+          name: "Release ${{ needs.test_and_build.outputs.version }}"
           body: ${{ github.event.head_commit.message }}
+          tag_name: ${{ needs.test_and_build.outputs.version }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Download all the dists
