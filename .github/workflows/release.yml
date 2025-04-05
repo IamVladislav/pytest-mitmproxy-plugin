@@ -17,6 +17,7 @@ jobs:
       url: https://pypi.org/p/pytest-mitmproxy-plugin
     permissions:
       id-token: write
+      contents: write
     steps:
       - name: create-release
         uses: softprops/action-gh-release@v2
