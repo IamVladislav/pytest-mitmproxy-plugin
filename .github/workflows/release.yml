@@ -1,9 +1,9 @@
 name: release
 
 on:
-  release:
-    types:
-      - published
+  push:
+    branches:
+      - main
 
 jobs:
   test_and_build:
@@ -18,6 +18,17 @@ jobs:
     permissions:
       id-token: write
     steps:
+      - name: create-release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: ${{ needs.build.outputs.version }}
+          tag_name: ${{ github.ref }}
+          body_path: ${{ github.event.head_commit.message }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - name: Download all the dists
         uses: actions/download-artifact@v4
         with:

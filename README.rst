@@ -76,6 +76,13 @@ The toml configuration should be under "mitmproxy-plugin" label, full configrati
     log_level = "INFO"
 
 
+
+Version convention
+------------
+The major version define significant changes, which may not have the backward compatibility.
+The middle version define changes, which modify plugin code, but have the backward compatibility.
+The minor version changes define internal changes like workflow/linters etc.
+
 Contributing
 ------------
 Contributions are very welcome. Tests can be run with `tox`_, please ensure
