@@ -5,7 +5,7 @@ import logging
 import threading
 import time
 from enum import StrEnum
-from typing import IO, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from mitmproxy import exceptions, options
 from mitmproxy.addons import proxyserver
@@ -13,6 +13,7 @@ from mitmproxy.addons.dumper import Dumper
 from mitmproxy.tools.dump import DumpMaster
 
 if TYPE_CHECKING:
+    from pathlib import Path
     from typing import Any
 
     from pytest_mitmproxy_plugin.abstract_addon import AbstractAddon
@@ -48,13 +49,14 @@ class MitmManager(threading.Thread):
         listen_host: str = "127.0.0.1",
         listen_port: int = 0,
         log_level: int = logging.DEBUG,
-        log_file: IO[str] | None = None,
+        log_file: Path | None = None,
     ) -> None:
         threading.Thread.__init__(self, daemon=True)
         self.proxyInstance = self.__create_instance(listen_host, listen_port, mode, log_file)
         self.added_addons: list[type[AbstractAddon] | AbstractAddon] = []
         self.host = listen_host
         self.port = listen_port
+        self.log_file = log_file
 
         if step_logger is None:
             logger.setLevel(log_level)
@@ -79,13 +81,13 @@ class MitmManager(threading.Thread):
 
     @staticmethod
     def __create_instance(
-        listen_host: str, listen_port: int, mode: MitmMode, log_file: IO[str] | None = None
+        listen_host: str, listen_port: int, mode: MitmMode, log_file: Path | None = None
     ) -> DumpMaster:
         proxy_options = options.Options(
             listen_host=listen_host, listen_port=listen_port, mode=[mode.value], ssl_insecure=True
         )
         dump_master = DumpMaster(proxy_options, asyncio.new_event_loop(), with_termlog=False, with_dumper=False)
-        dump_master.addons.add(Dumper(outfile=log_file))
+        dump_master.addons.add(Dumper(outfile=log_file.open("a") if log_file is not None else None))
         dump_master.addons.add(proxyserver)
         return dump_master
 
