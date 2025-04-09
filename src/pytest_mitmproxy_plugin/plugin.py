@@ -31,7 +31,7 @@ def pytest_addoption(parser: Any) -> None:
         help="MITM proxy log level",
         choices=logging.getLevelNamesMapping().keys(),
     )
-    parser.addoption("--proxy-log-file", default=None, help="File-destination for logs")
+    parser.addoption("--proxy-log-dir-path", default=None, help="Folder-destination for logs")
 
 
 @pytest.fixture(scope="session")
@@ -67,21 +67,21 @@ def mitm_manager_session(request: pytest.FixtureRequest) -> Iterator[MitmManager
         )
     ]
 
-    if (raw_path := request.config.getoption("--proxy-log-file")) is not None or (
-        raw_path := proxy_config.get("log_file")
+    if (raw_path := request.config.getoption("--proxy-log-dir-path")) is not None or (
+        raw_path := proxy_config.get("log_dir_path")
     ) is not None:
+        log_dir_path = raw_path
         if not (path := Path(raw_path)).exists():
-            path.touch()
-        log_file = path
+            path.mkdir(parents=True, exist_ok=True)
     else:
-        log_file = None
+        log_dir_path = None
 
     mitm_instance = MitmManager(
         mode=mode,
         listen_host=listen_host,
         listen_port=listen_port,
         log_level=log_level,
-        log_file=log_file,
+        log_dir_path=log_dir_path,
     )
     mitm_instance.start()
     yield mitm_instance

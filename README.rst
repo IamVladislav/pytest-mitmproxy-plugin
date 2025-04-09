@@ -65,7 +65,7 @@ Next options are configurable:
 
 --proxy-log-level ( or **log_level** in .toml ) - string, log level according logging, by default - INFO
 
---proxy-log-file ( or **log_file** in .toml ) - by default, MITMProxy send info data right into stdout, but sometimes in is better to capture in separately, file will be created if it doesn't exist, or use append mode if file existed
+--proxy-log-dir-path ( or **log_dir_path** in .toml ) - by default, MITMProxy send info data right into stdout, but sometimes in is better to capture in separately, log files will be created in directory
 
 The toml configuration should be under "mitmproxy-plugin" label, full configration example::
 
