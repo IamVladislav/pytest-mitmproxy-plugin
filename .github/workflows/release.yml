@@ -19,14 +19,14 @@ jobs:
       id-token: write
     steps:
       - name: create-release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v2
         id: create_release
         with:
           draft: false
           prerelease: false
-          release_name: ${{ needs.test_and_build.outputs.version }}
+          name: ${{ needs.test_and_build.outputs.version }}
           tag_name: ${{ github.ref }}
-          body_path: ${{ github.event.head_commit.message }}
+          body: ${{ github.event.head_commit.message }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Download all the dists
