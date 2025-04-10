@@ -185,11 +185,11 @@ class HTTPAddonHelper(AbstractAddon):
         *,
         flow: HTTPFlow,
         element_path: str,
-        new_value: str,
+        value: str,
     ) -> None:
         with cls._xml_response_context_manager(flow) as tree:
             for element in tree.findall(element_path):
-                element.text = new_value
+                element.text = value
 
     @classmethod
     def _replace_element_attribute_in_xml_response(

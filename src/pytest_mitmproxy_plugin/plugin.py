@@ -72,7 +72,7 @@ def mitm_manager_session(request: pytest.FixtureRequest) -> Iterator[MitmManager
     ) is not None:
         if not (path := Path(raw_path)).exists():
             path.touch()
-        log_file = path.open("a")
+        log_file = path
     else:
         log_file = None
 
