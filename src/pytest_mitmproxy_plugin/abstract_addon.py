@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 import re
 from contextlib import contextmanager
-from enum import StrEnum
 from typing import Any, cast, TYPE_CHECKING
 from xml.etree import ElementTree
 
@@ -11,6 +10,7 @@ from mitmproxy.http import Response
 
 if TYPE_CHECKING:
     from collections.abc import Generator, Iterable
+    from http import HTTPMethod
     from xml.etree.ElementTree import Element
 
     from mitmproxy.http import HTTPFlow
@@ -37,18 +37,6 @@ class NoSuchElementInTreeError(Exception):
     pass
 
 
-class HTTPRequestMethod(StrEnum):
-    GET = "GET"
-    HEAD = "HEAD"
-    POST = "POST"
-    PUT = "PUT"
-    DELETE = "DELETE"
-    CONNECT = "CONNECT"
-    OPTIONS = "OPTIONS"
-    TRACE = "TRACE"
-    PATCH = "PATCH"
-
-
 class HTTPAddonHelper(AbstractAddon):
     @staticmethod
     def _does_path_match(flow: HTTPFlow, pattern: str | re.Pattern[str]) -> bool:
@@ -63,7 +51,7 @@ class HTTPAddonHelper(AbstractAddon):
         return re.search(pattern, flow.request.pretty_url) is not None
 
     @staticmethod
-    def _is_request_type(flow: HTTPFlow, request_method: HTTPRequestMethod) -> bool:
+    def _is_request_type(flow: HTTPFlow, request_method: HTTPMethod) -> bool:
         return flow.request.method == request_method
 
     @staticmethod
