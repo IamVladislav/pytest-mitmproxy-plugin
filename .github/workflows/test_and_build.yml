@@ -27,7 +27,7 @@ jobs:
         run: poetry install --with dev
 
       - name: Test
-        run: poetry run tox
+        run: poetry run tox -e "${{ matrix.python-version }}" -e "check"
   build:
     runs-on: ubuntu-latest
     needs:
