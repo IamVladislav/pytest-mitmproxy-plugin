@@ -18,6 +18,8 @@ jobs:
     permissions:
       id-token: write
     steps:
+      - name: test
+        run: echo ${{ needs.test_and_build.outputs.version }}
       - name: create-release
         uses: actions/create-release@v1
         id: create_release
