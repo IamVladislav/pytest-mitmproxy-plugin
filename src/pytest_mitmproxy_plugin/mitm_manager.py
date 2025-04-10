@@ -4,6 +4,7 @@ import asyncio
 import logging
 import threading
 import time
+import uuid
 from enum import StrEnum
 from typing import TYPE_CHECKING
 
@@ -49,14 +50,20 @@ class MitmManager(threading.Thread):
         listen_host: str = "127.0.0.1",
         listen_port: int = 0,
         log_level: int = logging.DEBUG,
-        log_file: Path | None = None,
+        log_dir_path: Path | None = None,
     ) -> None:
         threading.Thread.__init__(self, daemon=True)
-        self.proxyInstance = self.__create_instance(listen_host, listen_port, mode, log_file)
+        self.log_file: Path | None
+        if log_dir_path is not None:
+            self.log_file = log_dir_path.joinpath(str(uuid.uuid4()))
+            if not self.log_file.exists():
+                self.log_file.touch()
+        else:
+            self.log_file = None
+        self.proxyInstance = self.__create_instance(listen_host, listen_port, mode, self.log_file)
         self.added_addons: list[type[AbstractAddon] | AbstractAddon] = []
         self.host = listen_host
         self.port = listen_port
-        self.log_file = log_file
 
         if step_logger is None:
             logger.setLevel(log_level)
