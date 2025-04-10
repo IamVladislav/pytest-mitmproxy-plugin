@@ -70,9 +70,9 @@ def mitm_manager_session(request: pytest.FixtureRequest) -> Iterator[MitmManager
     if (raw_path := request.config.getoption("--proxy-log-dir-path")) is not None or (
         raw_path := proxy_config.get("log_dir_path")
     ) is not None:
-        log_dir_path = raw_path
         if not (path := Path(raw_path)).exists():
             path.mkdir(parents=True, exist_ok=True)
+        log_dir_path = path
     else:
         log_dir_path = None
 
