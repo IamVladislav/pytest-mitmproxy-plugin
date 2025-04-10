@@ -20,23 +20,23 @@ jobs:
     steps:
       - name: test
         run: echo ${{ needs.test_and_build.outputs.version }}
-      - name: create-release
-        uses: actions/create-release@v1
-        id: create_release
-        with:
-          draft: false
-          prerelease: false
-          release_name: ${{ needs.test_and_build.outputs.version }}
-          tag_name: ${{ github.ref }}
-          body_path: ${{ github.event.head_commit.message }}
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-      - name: Download all the dists
-        uses: actions/download-artifact@v4
-        with:
-          name: python-package-distributions
-          path: dist/
-      - name: Publish distribution 📦 to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://test.pypi.org/legacy/
+#      - name: create-release
+#        uses: actions/create-release@v1
+#        id: create_release
+#        with:
+#          draft: false
+#          prerelease: false
+#          release_name: ${{ needs.test_and_build.outputs.version }}
+#          tag_name: ${{ github.ref }}
+#          body_path: ${{ github.event.head_commit.message }}
+#        env:
+#          GITHUB_TOKEN: ${{ github.token }}
+#      - name: Download all the dists
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: python-package-distributions
+#          path: dist/
+#      - name: Publish distribution 📦 to PyPI
+#        uses: pypa/gh-action-pypi-publish@release/v1
+#        with:
+#          repository-url: https://test.pypi.org/legacy/
